@@ -13,48 +13,76 @@ public class Main {
             System.out.println("4. Exit");
             System.out.print("Enter choice: ");
 
-            int choice = sc.nextInt();
-            sc.nextLine(); // clear buffer
+            String choiceInput = sc.nextLine();
 
+            int choice;
             try {
-                switch (choice) {
-                    case 1:
+                choice = Integer.parseInt(choiceInput);
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid choice! Enter a number between 1 and 4.");
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    try {
+                        // Course Name
                         System.out.print("Enter Course Name: ");
                         String name = sc.nextLine();
 
+                        // Credits (validated)
                         System.out.print("Enter Credits: ");
-                        int credits = sc.nextInt();
-                        sc.nextLine();
+                        String creditInput = sc.nextLine();
+                        int credits;
 
+                        try {
+                            credits = Integer.parseInt(creditInput);
+                            if (credits <= 0) {
+                                throw new IllegalArgumentException("Credits must be greater than 0.");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("❌ Credits must be a valid positive number.");
+                            break;
+                        }
+
+                        // Course Type (validated)
                         System.out.print("Enter Course Type (THEORY/LAB): ");
                         String typeInput = sc.nextLine().toUpperCase();
 
-                        CourseType type = CourseType.valueOf(typeInput);
+                        CourseType type;
+                        if (typeInput.equals("THEORY")) {
+                            type = CourseType.THEORY;
+                        } else if (typeInput.equals("LAB")) {
+                            type = CourseType.LAB;
+                        } else {
+                            System.out.println("❌ Invalid course type! Only THEORY or LAB is allowed.");
+                            break;
+                        }
 
                         Course course = new Course(name, credits, type);
                         student.addCourse(course);
-
                         System.out.println("✅ Course added successfully!");
-                        break;
 
-                    case 2:
-                        student.displayCourses();
-                        break;
+                    } catch (Exception e) {
+                        System.out.println("❌ Error: " + e.getMessage());
+                    }
+                    break;
 
-                    case 3:
-                        System.out.println("Total Credits: " + student.calculateTotalCredits());
-                        break;
+                case 2:
+                    student.displayCourses();
+                    break;
 
-                    case 4:
-                        System.out.println("Exiting program...");
-                        sc.close();
-                        return;
+                case 3:
+                    System.out.println("Total Credits: " + student.calculateTotalCredits());
+                    break;
 
-                    default:
-                        System.out.println("❌ Invalid choice!");
-                }
-            } catch (Exception e) {
-                System.out.println("⚠ Error: " + e.getMessage());
+                case 4:
+                    System.out.println("Exiting program...");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("❌ Invalid choice! Enter 1–4.");
             }
         }
     }
